@@ -1,0 +1,37 @@
+days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+hours_of_day = ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00']
+
+schedule = [['' for _ in range(len(hours_of_day))] for _ in range(len(days_of_week))]
+
+def print_schedule(schedule):
+    print("Weekly Schedule:")
+    print("{:<10}".format(""), end="")
+    for hour in hours_of_day:
+        print("{:<10}".format(hour), end="")
+    print()
+    for i, day in enumerate(days_of_week):
+        print("{:<10}".format(day), end="")
+        for j, hour in enumerate(hours_of_day):
+            print("{:<10}".format(schedule[i][j]), end="")
+        print()
+
+def update_schedule_user_input(schedule):
+    task =input("Enter task: ")
+    duration = int(input("Enter task duration (in hours): "))
+    due_date = input("Enter due date (Monday, Tuesday, etc.): ")
+
+    due_date_index = days_of_week.index(due_date)
+
+    while duration > 0 and due_date_index < len(days_of_week):
+        for i in range(len(hours_of_day)):
+            if duration == 0 or due_date_index >= len(days_of_week):
+                break
+            if schedule[due_date_index][i] == '':
+                schedule[due_date_index][i] = task
+                duration -= 1
+        due_date_index += 1
+
+update_schedule_user_input(schedule)
+
+print_schedule(schedule)
