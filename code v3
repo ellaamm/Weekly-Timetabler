@@ -1,0 +1,63 @@
+rom datetime import datetime, timedelta
+
+timetable = {
+    'Monday': {},
+    'Tuesday': {},
+    'Wednesday': {},
+    'Thursday': {},
+    'Friday': {}
+}
+
+hours = ['4pm', '5pm', '6pm', '7pm', '8pm']
+
+for day in timetable:
+    for hour in hours:
+        timetable[day][hour] = 'empty'
+
+def print_timetable(timetable):
+    print(f"{'Time':<6} {'Monday':<10} {'Tuesday':<10} {'Wednesday':<10} {'Thursday':<10} {'Friday':<10}")
+    print("-" * 56)
+
+    for hour in hours:
+        row = f"{hour:<6} "
+        for day in timetable:
+            row += f"{timetable[day][hour]:<10} "
+        print(row)
+
+def add_task(timetable, task, duration, due_date):
+    today = datetime.today()
+    day_index = (today.weekday() + 1) % 7  
+    days = list(timetable.keys())
+    due_date_index = days.index(due_date.capitalize())
+    remaining_duration = duration
+
+    while remaining_duration > 0 and day_index <= due_date_index:
+        day = days[day_index]
+        for hour in hours:
+            if remaining_duration <= 0:
+                break
+            if timetable[day][hour] == 'empty':
+                timetable[day][hour] = task
+                print(f"Task '{task}' added to {day} at {hour}.")
+                remaining_duration -= 1
+        day_index += 1
+
+def main():
+    print("Initial Timetable:")
+    print_timetable(timetable)
+
+    task = input("enter task ")
+    try:
+        duration = int(input("how many hours would this take to complete "))
+    except ValueError:
+        print("invalid entry. Please enter a full hour. No decimals")
+        return
+    due_date = input("enter due date ")
+
+    add_task(timetable, task, duration, due_date)
+
+    print("\nUpdated Timetable:")
+    print_timetable(timetable)
+
+if __name__ == "__main__":
+    main()
