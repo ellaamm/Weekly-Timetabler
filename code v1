@@ -1,0 +1,16 @@
+days=["monday", "tuesday", "wednesday", "thurday", "friday"]
+hours=["16:00", "17:00", "18:00" , "19:00" , "20:00"]
+totaldays=len(days)
+totalhours=len(hours)
+
+dailytasks=[["empty" for i in range(totalhours)] for i in range(totaldays)]
+
+print("        ", end="")
+for hour in hours:
+    print(hour, end=" ")
+print()
+for d, day in enumerate(days):
+    print(day + ":", end=" ")
+    for h in range(totalhours):
+        print(str(dailytasks[d][h]).ljust(6), end=" ")
+    print()
