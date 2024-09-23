@@ -1,0 +1,106 @@
+from datetime import datetime, timedelta
+
+#define timetable with days as wanted 
+timetable = {
+    'Monday': {},
+    'Tuesday': {},
+    'Wednesday': {},
+    'Thursday': {},
+    'Friday': {}
+}
+
+#put in wanted hours
+hours = ['4pm', '5pm', '6pm', '7pm', '8pm']
+
+# fill the timetable with 'empty' for each hour
+for day in timetable:
+    for hour in hours:
+        timetable[day][hour] = 'empty'
+
+# function to print the timetable as a table
+def print_timetable(timetable):
+    #print the header
+    print(f"{'Time':<6} {'Monday':<10} {'Tuesday':<10} {'Wednesday':<10} {'Thursday':<10} {'Friday':<10}")
+    print("-" * 56)
+
+    #print each hour row by row
+    for hour in hours:
+        row = f"{hour:<6} "
+        for day in timetable:
+            task = timetable[day][hour]
+            if isinstance(task, dict):
+                status = "✓" if task["completed"] else "✗"
+                row += f"{task['name']} {status:<6} "
+            else:
+                row += f"{task:<10} "
+        print(row)
+
+# gunction to add tasks to the timetable
+def add_task(timetable, task, duration, due_date):
+    today = datetime.today()
+    day_index = (today.weekday() + 1) % 7  # Get the index of the next day after today
+    days = list(timetable.keys())
+    due_date_index = days.index(due_date.capitalize())
+    remaining_duration = duration
+
+    while remaining_duration > 0 and day_index <= due_date_index:
+        day = days[day_index]
+        for hour in hours:
+            if remaining_duration <= 0:
+                break
+            if timetable[day][hour] == 'empty':
+                timetable[day][hour] = {"name": task, "completed": False}
+                print(f"Task '{task}' added to {day} at {hour}.")
+                remaining_duration -= 1
+        day_index += 1
+
+#function to mark tasks as completed
+def mark_task_completed(timetable):
+    while True:
+        day = input("Enter the day to mark task as completed (Monday, Tuesday, Wednesday, Thursday, Friday) or 'done' to finish: ").capitalize()
+        if day.lower() == 'done':
+            break
+        if day not in timetable:
+            print("Invalid day. Please enter a valid day.")
+            continue
+
+        hour = input("Enter the hour to mark task as completed (4pm, 5pm, 6pm, 7pm, 8pm): ")
+        if hour not in hours:
+            print("Invalid hour. Please enter a valid hour.")
+            continue
+
+        if isinstance(timetable[day][hour], dict):
+            timetable[day][hour]["completed"] = True
+            print(f"Task at {day} {hour} marked as completed.")
+        else:
+            print("No task scheduled at this time.")
+
+#main program
+def main():
+    print("Initial Timetable:")
+    print_timetable(timetable)
+
+    task = input("Enter the task: ")
+    try:
+        duration = int(input("Enter the duration of the task in hours: "))
+    except ValueError:
+        print("Invalid duration. Please enter a number.")
+        return
+    due_date = input("Enter the due date (Monday, Tuesday, Wednesday, Thursday, Friday): ")
+
+    add_task(timetable, task, duration, due_date)
+
+    while True:
+        action = input("Enter 'check' to mark tasks as completed or 'done' to finish: ").lower()
+        if action == 'done':
+            break
+        elif action == 'check':
+            mark_task_completed(timetable)
+        else:
+            print("Invalid action. Please enter 'check' or 'done'.")
+
+    print("\nUpdated Timetable:")
+    print_timetable(timetable)
+
+if __name__ == "__main__":
+    main()
